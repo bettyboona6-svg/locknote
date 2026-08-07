@@ -47,15 +47,26 @@ class LockNoteApp:
         tk.Button(toolbar, text="Open…", command=self.open_note).pack(side=tk.LEFT, padx=3)
         tk.Button(toolbar, text="Save (Encrypted)", command=self.save_note).pack(side=tk.LEFT, padx=3)
         tk.Button(toolbar, text="Lock && Clear", command=self.lock_clear).pack(side=tk.LEFT, padx=3)
+        tk.Button(toolbar, text="A-", width=3, command=self.decrease_font).pack(side=tk.LEFT, padx=(15, 2))
+        tk.Button(toolbar, text="A+", width=3, command=self.increase_font).pack(side=tk.LEFT, padx=2)
 
         self.status_var = tk.StringVar(value="New, unsaved note")
         tk.Label(toolbar, textvariable=self.status_var, fg="gray").pack(side=tk.RIGHT, padx=6)
 
-        self.text = tk.Text(root, wrap=tk.WORD, undo=True, font=("Consolas", 11))
+        self.font_size = 11
+        self.text = tk.Text(root, wrap=tk.WORD, undo=True, font=("Consolas", self.font_size))
         self.text.pack(fill=tk.BOTH, expand=True, padx=6, pady=(0, 6))
         self.text.bind("<<Modified>>", self.on_modified)
 
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
+
+    def increase_font(self):
+        self.font_size = min(self.font_size + 2, 48)
+        self.text.configure(font=("Consolas", self.font_size))
+
+    def decrease_font(self):
+        self.font_size = max(self.font_size - 2, 8)
+        self.text.configure(font=("Consolas", self.font_size))
 
     def on_modified(self, event=None):
         if self.text.edit_modified():
